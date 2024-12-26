@@ -1,6 +1,14 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+import { Document } from "@langchain/core/documents";
+import * as dotenv from 'dotenv';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+dotenv.config()
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const geminiApiKey = process.env.GEMINI_API_KEY;
+if (!geminiApiKey) {
+    throw new Error("GEMINI_API_KEY environment variable is not set");
+}
+
+const genAI = new GoogleGenerativeAI(geminiApiKey);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // const prompt = "Explain how AI works";
@@ -48,6 +56,36 @@ export const aiSummariseCommit = async (diff: string) => {
 // const result = await model.generateContent(prompt);
 // console.log(result.response.text());
 
+export async function summariseCode(doc: Document) {
+  console.log('getting summary for', doc.metadata.source)
+  try {
+    const code = doc.pageContent.slice(0, 10000)
+    const response = await model.generateContent([
+      `You are an intelligent senior software engineer who specialises in onboarding junior software engineers onto projects. 
+          You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
+          Here is the code: 
+          ---
+          ${code}
+          ---
+          Give a summary no more than 100 words of the code above`,
+    ])
+
+    return response.response.text()
+  } catch (error) {
+    return ''
+  }
+}
+
+export async function generateEmbedding(summary: string) {
+  const model = genAI.getGenerativeModel({
+    model: "text-embedding-004"
+  })
+  const result = await model.embedContent(summary)
+  const embedding = result.embedding
+  return embedding.values
+}
+
+console.log(await generateEmbedding('hello world'))
   
   
   
