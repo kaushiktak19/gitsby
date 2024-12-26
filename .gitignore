@@ -44,3 +44,6 @@ yarn-error.log*
 
 # idea files
 .idea
+
+#text files
+src/lib/how-to.txt

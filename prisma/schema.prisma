@@ -38,6 +38,7 @@ model Project {
 
     userToProjects UserToProject[]
     commits Commit[]
+    sourceCodeEmbeddings SourceCodeEmbedding[]
 }
 
 model UserToProject {
@@ -54,6 +55,17 @@ model UserToProject {
     @@unique([userId, projectId])
 }
 
+model SourceCodeEmbedding {
+    id String @id @default(cuid())
+
+    summaryEmbedding Unsupported("vector(768)")
+    sourceCode String
+    fileName String
+    summary String
+
+    projectId String
+    project Project @relation(fields: [projectId], references: [id])
+}
 
 model Commit {
     id  String  @id @default(cuid())
