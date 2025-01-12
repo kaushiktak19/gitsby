@@ -39,7 +39,7 @@ export const getCommitHashes = async (githubUrl:string): Promise<Response[]> => 
 }
 
 export const pollCommits = async (projectId : string) => {
-    const {project, githubUrl} = await fetchProjectGothubUrl(projectId)
+    const {project, githubUrl} = await fetchProjectGithubUrl(projectId)
     const commitHashes = await getCommitHashes(githubUrl)
     const unprocessedCommits = await filterUnprocessedCommits(projectId, commitHashes)
     const summaryResponses = await Promise.allSettled(unprocessedCommits.map(commit => {
@@ -82,7 +82,7 @@ async function summariseCommits(githubUrl: string, commitHash: string ) {
     return await aiSummariseCommit(data) || ''
 }
 
-async function fetchProjectGothubUrl(projectId: string) {
+async function fetchProjectGithubUrl(projectId: string) {
     const project = await db.project.findUnique({
         where: {id: projectId},
         select: {
