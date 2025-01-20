@@ -1,13 +1,13 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Dialog, DialogHeader } from '@/components/ui/dialog'
+import { Dialog, DialogClose, DialogHeader } from '@/components/ui/dialog'
 import { api, RouterOutputs } from '@/trpc/react'
 import { DialogContent, DialogDescription, DialogTitle } from '@radix-ui/react-dialog'
-import { VideoIcon } from 'lucide-react'
+import { VideoIcon, X } from 'lucide-react'
 import { setSourceMapsEnabled } from 'process'
 import React from 'react'
-import { Button } from 'react-day-picker'
 
 type Props = {
     meetingId: string
@@ -49,49 +49,63 @@ const IssuesList = ({meetingId}: Props) => {
     )
 }
 
-function IssueCard({issue}: {issue: NonNullable<RouterOutputs['project']["getMeetingById"]>['issues'][number]}) {
-    const [open, setOpen] = React.useState(false)
+function IssueCard({ issue }: { issue: NonNullable<RouterOutputs['project']['getMeetingById']>['issues'][number] }) {
+    const [open, setOpen] = React.useState(false);
+
     return (
         <>
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>{issue.gist}</DialogTitle>
-                        <DialogDescription>
-                            {issue.headline}
-                        </DialogDescription>
-                        <p className='text-gray-600'>
-                            {issue.headline}
-                        </p>
-                        <blockquote className='mt-2 border-1-4 border-gray-300 bg-gray-50 p-4'>
-                            <span className='text-sm text-gray-600'>
-                                {issue.start} - {issue.end}
-                            </span>
-                            <p className='font-medium italic leading-relaxed text-gray-900'>
-                                {issue.summary}
-                            </p>
-                        </blockquote>
-                    </DialogHeader>
+                <DialogContent
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                    style={{ outline: 'none' }}
+                >
+                    <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+                        {/* Close Button */}
+                        <DialogClose asChild>
+                            <button
+                                onClick={() => setOpen(false)}
+                                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                                aria-label="Close"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+                        </DialogClose>
+
+                        {/* Dialog Header */}
+                        <DialogHeader>
+                            <DialogTitle className="text-lg font-bold">{issue.gist}</DialogTitle>
+                            <DialogDescription className="text-sm text-gray-500">
+                                {issue.headline}
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        {/* Dialog Content */}
+                        <div className="mt-4 text-gray-700">
+                            <p>{issue.headline}</p>
+                            <blockquote className="mt-2 border-l-4 border-gray-300 bg-gray-50 p-4">
+                                <span className="text-sm text-gray-600">
+                                    {issue.start} - {issue.end}
+                                </span>
+                                <p className="font-medium italic leading-relaxed text-gray-900">
+                                    {issue.summary}
+                                </p>
+                            </blockquote>
+                        </div>
+                    </div>
                 </DialogContent>
             </Dialog>
-            <Card className='relative'>
+            <Card className="relative">
                 <CardHeader>
-                    <CardTitle className=' text-xl'>
-                        {issue.gist}
-                    </CardTitle>
-                    <div className='border-b'></div>
-                    <CardDescription>
-                        {issue.headline}
-                    </CardDescription>
+                    <CardTitle className="text-xl">{issue.gist}</CardTitle>
+                    <div className="border-b"></div>
+                    <CardDescription>{issue.headline}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Button onClick={() => setOpen(true)}>
-                        Details
-                    </Button>
+                    <Button onClick={() => setOpen(true)}>Details</Button>
                 </CardContent>
             </Card>
         </>
-    )
+    );
 }
 
 export default IssuesList

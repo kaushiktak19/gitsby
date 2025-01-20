@@ -37,3 +37,7 @@ export const processMeeting = async (meetingUrl: string) => { // Use "string" he
     };
 };
 
+const FILE_URL = 'https://assembly.ai/sports_injuries.mp3';
+
+const response = await processMeeting(FILE_URL)
+console.log(response)
