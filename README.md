@@ -1,48 +1,47 @@
 # Gitsby Project Management Platform
 
-Gitsby is a platform designed to help teams manage their projects efficiently by integrating with GitHub, utilizing AI-driven summaries, and providing tools for collaboration. This application allows users to track GitHub commits, ask questions about their projects, process meeting recordings, and more. The system leverages various technologies including **Next.js**, **Tailwind CSS**, **pgvector**, and **AssemblyAI** for transcription and summarization.
+**Gitsby** is a platform designed to help teams track GitHub commits, collaborate effectively, and leverage AI-driven insights. By integrating with GitHub, utilizing **tRPC** for API routes, and providing powerful tools for meeting transcriptions, Q&A, and team management, Gitsby brings all project elements into one seamless experience.
+
+Try out it out from here - [https://gitsby-psi.vercel.app/](https://gitsby-psi.vercel.app/)
 
 ## Features
 
-- **Dashboard**: Displays a list of projects with recent commits, AI-generated summaries, and project details.
-- **Q&A Section**: Allows users to ask project-related questions and receive AI-generated answers based on the project’s codebase and summaries.
-- **Meetings**: Upload audio files of meetings, transcribe them using AssemblyAI, and generate summaries.
-- **Project Creation**: Create a new project by linking a GitHub repository and importing commits. AI-driven summaries and code embeddings are generated for easier querying.
-- **Member Management**: Invite team members to the project, manage roles, and collaborate more effectively.
-- **Archive Projects**: Archive completed projects for easy reference while keeping them inactive.
-  
+- **Dashboard**: A central hub displaying a list of projects, recent commits, AI-generated summaries, and project details.
+- **Q&A Section**: Users can ask project-related questions, with AI-generated responses based on the project’s codebase and summaries.
+- **Meetings**: Upload meeting recordings to transcribe and generate summaries via **AssemblyAI**.
+- **Project Creation**: Create new projects by linking to GitHub repositories, automatically importing commits, and generating AI-driven summaries and code embeddings for querying.
+- **Member Management**: Invite and manage project members, assigning roles for better team collaboration.
+- **Archive Projects**: Archive completed projects to keep them accessible for future reference while maintaining a streamlined active project list.
+
 ## Tech Stack
 
-- **Frontend**: 
-  - Next.js
-  - Tailwind CSS
-  - ShadCN
-  
-- **Backend**: 
-  - Express (for API routes)
-  - Prisma ORM (for database interactions)
-  
-- **Database**: 
-  - PostgreSQL with `pgvector` for vector embeddings
-  
-- **External Services**:
-  - Langchain (for extracting files from repository)
-  - GitHub API (via Octokit)
-  - Gemini API (for AI summaries)
-  - AssemblyAI (for meeting transcription)
+### Frontend:
+- **Next.js**
+- **Tailwind CSS**
+- **ShadCN**
+
+### Backend:
+- **tRPC** (for API routes)
+
+### Database:
+- **PostgreSQL** with **Prisma ORM** for handling database interactions.
+- **pgvector** for storing vector embeddings of codebase summaries and commits for efficient querying.
+
+### External Services:
+- **Langchain** (for extracting files from GitHub repositories)
+- **GitHub API** (via **Octokit**)
+- **Gemini API** (for generating AI summaries)
+- **AssemblyAI** (for meeting transcription)
 
 ## Process Flow Summary
 
-The overall workflow is as follows:
+Here’s how the platform works step-by-step:
 
-1. **Sign-in** → User authenticates using **Clerk**.
-2. **Dashboard** → Displays all projects, recent commits, and options to interact with the project.
-3. **Create Project** → User creates a project by entering a GitHub URL.
-4. **Commits Processing** → Fetches GitHub commits, generates summaries using **Gemini API**, and stores them in **pgvector** for easy querying.
-5. **Q&A** → Users can ask questions related to the project and get AI-generated answers.
-6. **Meeting Transcription** → Users upload audio files for meetings, which are transcribed and summarized using **AssemblyAI**.
-7. **Member Management** → Users can invite and manage project members.
-8. **Archive Project** → Projects can be archived once completed.
-
-
-
+1. **Sign-in** → Users authenticate via **Clerk**.
+2. **Dashboard** → Displays all active projects with recent commits and AI-generated summaries.
+3. **Create Project** → Users input a GitHub URL to create a project. **Prisma** interacts with the database to store project details, and **Langchain** extracts repository files.
+4. **Commits Processing** → GitHub commits are fetched and stored in the database. **Gemini API** generates summaries, which are then stored in **pgvector** for efficient querying.
+5. **Q&A** → Users can ask questions related to the project’s codebase, and **tRPC** routes fetch AI-generated answers based on the stored summaries and codebase.
+6. **Meeting Transcription** → Users upload meeting audio files, which **AssemblyAI** transcribes and summarizes. The transcriptions are stored in the database.
+7. **Member Management** → Users invite team members and manage roles. **Prisma** is used to update member data in the database.
+8. **Archive Project** → Completed projects are archived but remain accessible for future reference in the database.
